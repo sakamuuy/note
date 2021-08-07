@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 
 		switch args[0] {
 		case schema.Folder.String():
-			folderNames := db.GetAllName()
+			folderNames := db.GetAllFolderName()
 
 			prompt := promptui.Select{
 				Label: "Select folder",
@@ -94,7 +94,25 @@ to quickly create a Cobra application.`,
 			}
 			showFilePrompt(folderName)
 
-		case schema.Tag.String():
+		// case schema.Tag.String():
+		// 	tagNames := db.GetAllTagName()
+
+		// 	prompt := promptui.Select{
+		// 		Label: "Select tag",
+		// 		Items: tagNames,
+		// 	}
+
+		// 	_, tag, err := prompt.Run()
+		// 	if err != nil {
+		// 		fmt.Printf("Prompt failed %v\n", err)
+		// 		return
+		// 	}
+
+		// 	actionPrompt := promptui.Select{
+		// 		Label: "Select action",
+		// 		Items: []string{"show files", "edit", "delete"},
+		// 	}
+		// 	_, action, err := actionPrompt.Run()
 
 		default:
 			cmd.PrintErrf("no such command: %v \n", args[0])

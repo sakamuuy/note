@@ -50,3 +50,21 @@ func DeleteTag(tagName string) {
 
 	tx.Commit()
 }
+
+func GetAllTagName() (tagNames []string) {
+	Open()
+	defer Close()
+
+	rows, err := db.Query("select name from tags")
+	if err != nil {
+		panic(err)
+	}
+
+	for rows.Next() {
+		var tagName string
+		rows.Scan(&tagName)
+		tagNames = append(tagNames, tagName)
+	}
+
+	return
+}

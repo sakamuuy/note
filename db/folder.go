@@ -69,7 +69,7 @@ func PatchNewNameFolder(id string, newName string) {
 	return
 }
 
-func GetAllName() (folderNames []string) {
+func GetAllFolderName() (folderNames []string) {
 	Open()
 	defer Close()
 
