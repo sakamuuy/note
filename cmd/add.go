@@ -40,7 +40,16 @@ var addCmd = &cobra.Command{
 			db.AddFolder(name)
 
 		case schema.File.String():
-			println("file")
+			name, err := flags.GetString("name")
+			if err != nil {
+				cmd.PrintErr(err)
+			}
+			folderName, err := flags.GetString("folder")
+			if err != nil {
+				cmd.PrintErr(err)
+			}
+			db.AddFile(name, folderName)
+
 		case schema.Tag.String():
 			println("tag")
 		}
@@ -48,7 +57,8 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
-	addCmd.Flags().StringP("name", "n", "", "(Folder | File | Tags)'s name")
+	addCmd.Flags().StringP("name", "n", "", "(Folder | File | Tags) name")
+	addCmd.Flags().StringP("folder", "f", "", "Name of the folder where the files will be stored.")
 	rootCmd.AddCommand(addCmd)
 
 	// Here you will define your flags and configuration settings.

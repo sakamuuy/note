@@ -65,6 +65,7 @@ func Initialize() {
 		create table files (
 			id integer primary key autoincrement, 
 			name text, 
+			content text,
 			created_at text, 
 			updated_at text,
 			folder_id integer,
@@ -127,19 +128,19 @@ func BeginTransaction() *sql.Tx {
 // 		log.Fatal(err)
 // 	}
 
-// 	statement, err := transaction.Prepare("insert into foo(id, name) values(?, ?)")
+// statement, err := transaction.Prepare("insert into foo(id, name) values(?, ?)")
+// if err != nil {
+// 	log.Fatal(err)
+// }
+// defer statement.Close()
+
+// for i := 0; i < 100; i++ {
+// 	_, err = statement.Exec(i, fmt.Sprintf("Hello world!%03d", i))
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
-// 	defer statement.Close()
-
-// 	for i := 0; i < 100; i++ {
-// 		_, err = statement.Exec(i, fmt.Sprintf("Hello world!%03d", i))
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-// 	}
-// 	transaction.Commit()
+// }
+// transaction.Commit()
 
 // 	rows, err := db.Query("select id, name from foo")
 // 	if err != nil {

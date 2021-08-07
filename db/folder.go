@@ -18,6 +18,7 @@ func AddFolder(name string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer stmt.Close()
 
 	now := GetNowFormattedStr()
 	_, err = stmt.Exec(name, now, now)
