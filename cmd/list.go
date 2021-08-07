@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"noteapp/db"
 	"noteapp/schema"
+	"strings"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
@@ -61,7 +62,22 @@ to quickly create a Cobra application.`,
 				return
 			}
 
-			fmt.Printf("You choose %q\n", result)
+			actionPrompt := promptui.Select{
+				Label: "Select action.",
+				Items: []string{"write", "edit", "delete"},
+			}
+
+			_, action, err := actionPrompt.Run()
+
+			switch action {
+			case "write":
+				contentsname := db.GetFileContentsByName(result)
+				runVim(strings.Join([]string{"./contents/", contentsname, ".md"}, ""))
+			case "edit":
+			case "delete":
+			default:
+				return
+			}
 
 		case schema.Tag.String():
 

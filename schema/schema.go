@@ -20,3 +20,24 @@ func (s Schema) String() string {
 		return "Unknown"
 	}
 }
+
+type Action int
+
+const (
+	Write Action = iota + 1
+	Edit
+	Delete
+)
+
+func (a Action) string() string {
+	switch a {
+	case Write:
+		return "write"
+	case Edit:
+		return "edit"
+	case Delete:
+		return "delete"
+	default:
+		return "unknown"
+	}
+}
