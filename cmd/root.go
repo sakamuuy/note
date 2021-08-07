@@ -17,7 +17,6 @@ package cmd
 
 import (
 	"fmt"
-	"noteapp/db"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -41,7 +40,12 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
 	Run: func(cmd *cobra.Command, args []string) {
-		db.Init()
+		// db.Open()
+		// defer db.Close()
+
+		// if !db.IsInitialized() {
+		// 	db.Initialize()
+		// }
 	},
 }
 

@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -30,6 +31,7 @@ initialized is db has metatable and is_initialized is true
 func IsInitialized() bool {
 	metaRows, err := db.Query("select is_initialized from meta")
 	if err != nil {
+		fmt.Println("Run `noteapp init` before run any commands")
 		log.Fatal(err)
 	}
 	defer metaRows.Close()
@@ -39,13 +41,13 @@ func IsInitialized() bool {
 	}
 
 	for metaRows.Next() {
-		var isInitialized bool
+		var isInitialized int8
 		err = metaRows.Scan(&isInitialized)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		return isInitialized
+		return isInitialized == 1
 	}
 
 	return false
@@ -58,7 +60,9 @@ func Initialize() {
 	statement := `
 		create table folder (id integer primary key autoincrement, name text, created_at text, updated_at text);
 		create table files (id integer primary key autoincrement, name text, created_at text, updated_at text);
-		create table tag (id integer primary key autoincrement, name text, created_at text, updated_at text);
+		create table tags (id integer primary key autoincrement, name text, created_at text, updated_at text);
+		create table meta (is_initialized integer);
+		insert into meta(is_initialized) values(1);
 	`
 	_, err = db.Exec(statement)
 	if err != nil {
@@ -66,11 +70,13 @@ func Initialize() {
 	}
 
 	tx.Commit()
+
+	fmt.Printf("Initialized✨\n")
 }
 
 func BeginTransaction() *sql.Tx {
 	transaction, err := db.Begin()
-	if err != nil {
+	if err != nil || transaction == nil {
 		log.Fatal(err)
 	}
 
