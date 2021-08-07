@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func AddFolder(name string) {
+func AddTag(name string) {
 	Open()
 	defer Close()
 
@@ -14,7 +14,7 @@ func AddFolder(name string) {
 	}
 
 	tx := BeginTransaction()
-	stmt, err := tx.Prepare("insert into folders(name, created_at, updated_at) values(?, ?, ?)")
+	stmt, err := tx.Prepare("insert into tags(name, created_at, updated_at) values(?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,6 +27,6 @@ func AddFolder(name string) {
 	}
 	tx.Commit()
 
-	fmt.Printf("Create folder \"%v\" 🚀 \n", name)
+	fmt.Printf("Create tag \"%v\" 🚀 \n", name)
 	return
 }

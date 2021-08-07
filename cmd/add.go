@@ -51,7 +51,14 @@ var addCmd = &cobra.Command{
 			db.AddFile(name, folderName)
 
 		case schema.Tag.String():
-			println("tag")
+			name, err := flags.GetString("name")
+			if err != nil {
+				cmd.PrintErr(err)
+			}
+			db.AddTag(name)
+
+		default:
+			cmd.PrintErrf("no such command: %v \n", args[0])
 		}
 	},
 }

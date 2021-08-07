@@ -47,6 +47,6 @@ func AddFile(name string, folderName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Create file %v 🚀 \n", name)
+	fmt.Printf("Create file \"%v\" 🚀 \n", name)
 	return
 }
