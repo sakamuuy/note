@@ -40,17 +40,14 @@ func IsInitialized() bool {
 		return false
 	}
 
-	for metaRows.Next() {
-		var isInitialized int8
-		err = metaRows.Scan(&isInitialized)
-		if err != nil {
-			log.Fatal(err)
-		}
+	var isInitialized string
+	err = metaRows.Scan(&isInitialized)
 
-		return isInitialized == 1
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return false
+	return isInitialized == "1"
 }
 
 func Initialize() {
@@ -58,7 +55,7 @@ func Initialize() {
 	var err error
 
 	statement := `
-		create table folder (id integer primary key autoincrement, name text, created_at text, updated_at text);
+		create table folders (id integer primary key autoincrement, name text, created_at text, updated_at text);
 		create table files (id integer primary key autoincrement, name text, created_at text, updated_at text);
 		create table tags (id integer primary key autoincrement, name text, created_at text, updated_at text);
 		create table meta (is_initialized integer);

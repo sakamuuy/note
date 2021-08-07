@@ -1,6 +1,9 @@
 package db
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
 func AddFolder(name string) {
 	Open()
@@ -11,15 +14,18 @@ func AddFolder(name string) {
 	}
 
 	tx := BeginTransaction()
-	stmt, err := tx.Prepare("insert into folders(name) values(?)")
+	stmt, err := tx.Prepare("insert into folders(name, created_at, updated_at) values(?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(name)
+
+	now := GetNowFormattedStr()
+	_, err = stmt.Exec(name, now, now)
 	if err != nil {
 		log.Fatal(err)
 	}
 	tx.Commit()
 
+	fmt.Printf("Create folder %v 🚀 \n", name)
 	return
 }

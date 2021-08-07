@@ -48,6 +48,7 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
+	addCmd.Flags().StringP("name", "n", "", "(Folder | File | Tags)'s name")
 	rootCmd.AddCommand(addCmd)
 
 	// Here you will define your flags and configuration settings.
