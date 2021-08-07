@@ -31,6 +31,62 @@ func AddFolder(name string) {
 	return
 }
 
+func GetFolderByName(name string) string {
+	Open()
+	defer Close()
+
+	rows, err := db.Query(`SELECT id FROM folders WHERE name=?`, name)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	var id string
+	for rows.Next() {
+		rows.Scan(&id)
+	}
+
+	return id
+}
+
+func PatchNewNameFolder(id string, newName string) {
+	Open()
+	defer Close()
+
+	tx := BeginTransaction()
+	stmt, err := tx.Prepare("update folders set name = ? where id = ?")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = stmt.Exec(newName, id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tx.Commit()
+	fmt.Printf("Updated folder %v", newName)
+	return
+}
+
+func GetAllName() (folderNames []string) {
+	Open()
+	defer Close()
+
+	rows, err := db.Query(`select name from folders`)
+	if err != nil {
+		panic(err)
+	}
+
+	for rows.Next() {
+		var folderName string
+		rows.Scan(&folderName)
+		folderNames = append(folderNames, folderName)
+	}
+
+	return
+}
+
 func GetFilesFolderHas(folderName string) (fileNames []string) {
 	Open()
 	defer Close()

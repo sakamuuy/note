@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"noteapp/db"
 	"noteapp/schema"
 	"strings"
@@ -41,6 +42,47 @@ to quickly create a Cobra application.`,
 
 		switch args[0] {
 		case schema.Folder.String():
+			folderNames := db.GetAllName()
+
+			prompt := promptui.Select{
+				Label: "Select folder",
+				Items: folderNames,
+			}
+
+			_, folder, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return
+			}
+
+			actionPrompt := promptui.Select{
+				Label: "Select action",
+				Items: []string{"edit", "delete"},
+			}
+
+			_, action, err := actionPrompt.Run()
+
+			switch action {
+			case "edit":
+				id := db.GetFolderByName(folder)
+
+				prompt := promptui.Prompt{
+					Label: "New name:",
+					Validate: func(s string) error {
+						return nil
+					},
+				}
+				result, err := prompt.Run()
+				if err != nil {
+					log.Fatalln(err)
+					return
+				}
+
+				db.PatchNewNameFolder(id, result)
+
+			case "delete":
+				db.DeleteFolder(folder)
+			}
 
 		case schema.File.String():
 			folderName, err := flags.GetString("folder")
@@ -51,7 +93,7 @@ to quickly create a Cobra application.`,
 			fileNames := db.GetFilesFolderHas(folderName)
 
 			prompt := promptui.Select{
-				Label: "Select edit file.",
+				Label: "Select file.",
 				Items: fileNames,
 			}
 
@@ -74,7 +116,9 @@ to quickly create a Cobra application.`,
 				contentsname := db.GetFileContentsByName(result)
 				runVim(strings.Join([]string{"./contents/", contentsname, ".md"}, ""))
 			case "edit":
+
 			case "delete":
+
 			default:
 				return
 			}
