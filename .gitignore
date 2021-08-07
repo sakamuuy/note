@@ -17,3 +17,6 @@
 # vendor/
 
 *.sql
+
+contents/*.md
+!contents/sample.md
