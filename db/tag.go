@@ -30,3 +30,23 @@ func AddTag(name string) {
 	fmt.Printf("Create tag \"%v\" 🚀 \n", name)
 	return
 }
+
+func DeleteTag(tagName string) {
+	Open()
+	defer Close()
+
+	tx := BeginTransaction()
+	stmt, err := tx.Prepare("delete from tags where name=?")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(tagName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tx.Commit()
+}

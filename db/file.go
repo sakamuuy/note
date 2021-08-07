@@ -77,3 +77,23 @@ func GetFileContentsByName(fileName string) (contentsName string) {
 
 	return
 }
+
+func DeleteFile(fileName string) {
+	Open()
+	defer Close()
+
+	tx := BeginTransaction()
+	stmt, err := tx.Prepare("delete from files where name=?")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tx.Commit()
+}

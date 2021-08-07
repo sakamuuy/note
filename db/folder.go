@@ -56,3 +56,23 @@ func GetFilesFolderHas(folderName string) (fileNames []string) {
 
 	return
 }
+
+func DeleteFolder(folderName string) {
+	Open()
+	defer Close()
+
+	tx := BeginTransaction()
+	stmt, err := tx.Prepare("delete from folders where name=?")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(folderName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tx.Commit()
+}
