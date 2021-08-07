@@ -55,11 +55,41 @@ func Initialize() {
 	var err error
 
 	statement := `
-		create table folders (id integer primary key autoincrement, name text, created_at text, updated_at text);
-		create table files (id integer primary key autoincrement, name text, created_at text, updated_at text);
-		create table tags (id integer primary key autoincrement, name text, created_at text, updated_at text);
+		create table folders (
+			id integer primary key autoincrement, 
+			name text, 
+			created_at text, 
+			updated_at text
+		);
+
+		create table files (
+			id integer primary key autoincrement, 
+			name text, 
+			created_at text, 
+			updated_at text,
+			folder_id integer,
+			foreign key (folder_id) references folders(id)
+		);
+
+		create table tags (
+			id integer primary key autoincrement, 
+			name text, 
+			created_at text, 
+			updated_at text
+		);
+
+		create table tag_attachments (
+			id integer primary key autoincrement, 
+			file_id integer,
+			tag_id integer,
+			foreign key (file_id) references files(id),
+			foreign key (tag_id) references tags(id)
+		);
+
 		create table meta (is_initialized integer);
 		insert into meta(is_initialized) values(1);
+
+		PRAGMA foreign_keys=true;
 	`
 	_, err = db.Exec(statement)
 	if err != nil {
@@ -68,7 +98,7 @@ func Initialize() {
 
 	tx.Commit()
 
-	fmt.Printf("Initialized✨\n")
+	fmt.Printf("done✨\n")
 }
 
 func BeginTransaction() *sql.Tx {
