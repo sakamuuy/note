@@ -57,12 +57,15 @@ to quickly create a Cobra application.`,
 
 			actionPrompt := promptui.Select{
 				Label: "Select action",
-				Items: []string{"edit", "delete"},
+				Items: []string{"show files", "edit", "delete"},
 			}
 
 			_, action, err := actionPrompt.Run()
 
 			switch action {
+			case "show files":
+				showFilePrompt(folder)
+
 			case "edit":
 				id := db.GetFolderByName(folder)
 
@@ -87,41 +90,9 @@ to quickly create a Cobra application.`,
 		case schema.File.String():
 			folderName, err := flags.GetString("folder")
 			if err != nil {
-				cmd.PrintErr(err)
+				log.Panic(err)
 			}
-
-			fileNames := db.GetFilesFolderHas(folderName)
-
-			prompt := promptui.Select{
-				Label: "Select file.",
-				Items: fileNames,
-			}
-
-			_, result, err := prompt.Run()
-
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
-			}
-
-			actionPrompt := promptui.Select{
-				Label: "Select action.",
-				Items: []string{"write", "edit", "delete"},
-			}
-
-			_, action, err := actionPrompt.Run()
-
-			switch action {
-			case "write":
-				contentsname := db.GetFileContentsByName(result)
-				runVim(strings.Join([]string{"./contents/", contentsname, ".md"}, ""))
-			case "edit":
-
-			case "delete":
-
-			default:
-				return
-			}
+			showFilePrompt(folderName)
 
 		case schema.Tag.String():
 
@@ -144,4 +115,39 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func showFilePrompt(folderName string) {
+	fileNames := db.GetFilesFolderHas(folderName)
+
+	prompt := promptui.Select{
+		Label: "Select file.",
+		Items: fileNames,
+	}
+
+	_, result, err := prompt.Run()
+
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		return
+	}
+
+	actionPrompt := promptui.Select{
+		Label: "Select action.",
+		Items: []string{"write", "edit", "delete"},
+	}
+
+	_, action, err := actionPrompt.Run()
+
+	switch action {
+	case "write":
+		contentsname := db.GetFileContentsByName(result)
+		runVim(strings.Join([]string{"./contents/", contentsname, ".md"}, ""))
+	case "edit":
+
+	case "delete":
+
+	default:
+		return
+	}
 }
